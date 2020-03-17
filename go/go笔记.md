@@ -30,7 +30,7 @@ var a = 1
 a:=1(这个方法只能在函数内存在)
 ```
 
-#数组
+#数组(map)
 
 数组key是string则使用map来定义,两种声明方法
 
@@ -114,3 +114,39 @@ type Men interface {
 }
 ```
 接口里面都是待填写参数的方法
+#变量类型判断(comma-ok)
+```
+value, ok := element.(int);
+```
+value = element ,ok = true或者false（依据括号内的类型判断）,以上面为例,element是int类型，则ok=true，如果不是，则ok=false。
+#结构体打印
+```
+type Person struct {
+	name string
+	age  int
+}
+a := Person{"Dennis", 70}
+fmt.Println(a)
+```
+打印结果:
+```
+{Dennis 70}
+```
+如果添加方法重写string:
+```
+// 定义了 String 方法，实现了 fmt.Stringer
+func (p Person) String() string {
+	return "(name: " + p.name + " - age: " + strconv.Itoa(p.age) + " years)"
+}
+```
+打印结果:
+```
+(name: Dennis - age: 70 years)
+```
+
+#类型定义别名
+```
+type a int
+```
+int类型别名叫a
+
