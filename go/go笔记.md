@@ -87,3 +87,30 @@ value of a in deferred function b 5
 ```
 
 defer从下往上运行
+#结构的理解
+```
+type Human struct {
+    name string
+    age int
+    phone string
+}
+```
+更像声明class
+
+用结构（类）去在方法中应用
+```
+// Human 对象实现 Sayhi 方法
+func (h *Human) SayHi() {
+    fmt.Printf("Hi, I am %s you can call me on %s\n", h.name, h.phone)
+}
+```
+#接口的理解
+```
+// 定义 interface
+type Men interface {
+    SayHi()
+    Sing(lyrics string)
+    Guzzle(beerStein string)
+}
+```
+接口里面都是待填写参数的方法
