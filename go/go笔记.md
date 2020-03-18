@@ -114,6 +114,16 @@ type Men interface {
 }
 ```
 接口里面都是待填写参数的方法
+#接口实现
+```
+    mike := Student{Human{"Mike", 25, "222-222-XXX"}, "MIT", 0.00}
+  // 定义 Men 类型的变量i
+    var i Men
+
+    // i 能存储 Student
+    i = mike
+    i.SayHi()
+```
 #变量类型判断(comma-ok)
 ```
 value, ok := element.(int);
@@ -150,3 +160,98 @@ type a int
 ```
 int类型别名叫a
 
+#反射
+```
+kk := Person{name: "sj", age: 2}
+t := reflect.TypeOf(kk.name)
+v := reflect.ValueOf(kk.name)
+```
+获取值的类型，以及值
+#信道声明
+```
+var a chan int
+a = make(chan int)
+简洁声明:
+a:=make(chan int)
+```
+#信道读取
+```
+data := <- a // 读取信道 a  
+a <- data // 写入信道 a
+```
+#信道与go并发工作机制
+当信道写入时，才可能往下执行，如:
+```
+package main
+
+import (  
+    "fmt"
+)
+
+func hello(done chan bool) {  
+    fmt.Println("Hello world goroutine")
+    done <- true
+}
+func main() {  
+    done := make(chan bool)
+    go hello(done)
+    <-done
+    fmt.Println("main function")
+}
+```
+只有当true数据传入done时，<-done才会往下执行
+#切片返回
+```
+func producer() []int {
+	sum := make([]int, 10)
+	for i := 0; i < 10; i++ {
+		sum[i] = i
+	}
+	return sum
+}
+func main() {
+
+	a := producer()
+	godump.Dump(a)
+}
+```
+#数组返回
+```
+func producer() [10]int {
+	var sum [10]int
+	for i := 0; i < 10; i++ {
+		sum[i] = i
+	}
+	return sum
+}
+```
+#缓冲信道
+```
+func main() {  
+    ch := make(chan string, 2)
+    ch <- "naveen"
+    ch <- "paul"
+    fmt.Println(<- ch)
+    fmt.Println(<- ch)
+}
+```
+信道设置缓冲容量为2，因此执行两个信道写入不会堵塞
+#工作池
+```
+func Good(i int, wg *sync.WaitGroup) {
+	fmt.Println("this is ", i)
+	wg.Done()
+}
+func main() {
+	var wg sync.WaitGroup
+	n := 4
+	for i := 0; i <= n; i++ {
+		wg.Add(1)
+		Good(i, &wg)
+	}
+	wg.Wait()
+	fmt.Println("Over")
+
+}
+```
+工作池wg，计数器为零时才能执行到Wait()方法，不然会卡住。计数器增加通过Add()方法增加，减少通过Done()方法。必须传递工作池的地址，不然Good方法每次执行的都是新的工作池。
