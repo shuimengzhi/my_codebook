@@ -255,3 +255,27 @@ func main() {
 }
 ```
 工作池wg，计数器为零时才能执行到Wait()方法，不然会卡住。计数器增加通过Add()方法增加，减少通过Done()方法。必须传递工作池的地址，不然Good方法每次执行的都是新的工作池。
+#select信道的switch
+```
+ select {
+    case s1 := <-output1:
+        fmt.Println(s1)
+    case s2 := <-output2:
+        fmt.Println(s2)
+    }
+```
+#Mutex信道锁
+```
+mutex.Lock()  
+x = x + 1  
+mutex.Unlock()
+```
+在这个方法之间的所有计算，只能有一个信道执行，相当于锁。数据不会被同时修改
+#理解指针的*与&
+```
+a := "A"   // a的类型为 string
+	b := &a  // b的类型为*string *代表指针，这里b是一个指针变量
+	res := *b
+	fmt.Println(b) // 0xc0420381d0  这里a是被取地址的变量，b变量进行接收。
+	fmt.Println(res) // "A" 
+```
