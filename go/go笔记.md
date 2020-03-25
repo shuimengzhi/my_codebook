@@ -264,13 +264,33 @@ func main() {
         fmt.Println(s2)
     }
 ```
-#Mutex信道锁
+#Mutex信道锁（互斥锁）
 ```
 mutex.Lock()  
 x = x + 1  
 mutex.Unlock()
 ```
 在这个方法之间的所有计算，只能有一个信道执行，相当于锁。数据不会被同时修改
+#sync.RWMutex信道锁（读锁和写锁）
+写锁权限高于读锁，有写锁时优先进行写锁定
+
+写锁
+```
+sync.RWMutex.Lock()
+fmt.Println("Change with rwmutex lock")
+time.Sleep(3 * time.Second)
+c.password = pass
+sync.RWMutex.Unlock()
+```
+读锁
+```
+ sync.RWMutex.RLock()
+    fmt.Println("show with rwmutex",time.Now().Second())
+    time.Sleep(1 * time.Second)
+    defer sync.RWMutex.RUnlock()
+```
+Mutex with RWMutex:仅针对读的性能来说，RWMutex要高于Mutex，因为rwmutex的多个读可以并存。Mutex适用于读写不确定场景
+
 #理解指针的*与&
 ```
 a := "A"   // a的类型为 string
