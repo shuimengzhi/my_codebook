@@ -299,3 +299,49 @@ a := "A"   // a的类型为 string
 	fmt.Println(b) // 0xc0420381d0  这里a是被取地址的变量，b变量进行接收。
 	fmt.Println(res) // "A" 
 ```
+
+#go的...
+‘…’ 其实是go的一种语法糖。
+它的第一个用法主要是用于函数有多个不定参数的情况，可以接受多个不确定数量的参数。
+第二个用法是slice可以被打散进行传递。
+```
+func test1(args ...string) { //可以接受任意个string参数
+    for _, v:= range args{
+        fmt.Println(v)
+    }
+}
+
+func main(){
+var strss= []string{
+        "qwr",
+        "234",
+        "yui",
+        "cvbc",
+    }
+    test1(strss...) //切片被打散传入
+}
+```
+
+#type func
+函数套娃
+```
+package main
+
+import "fmt"
+
+type First func(int) int
+type Second func(int) First
+
+func squareSum(x int) Second {
+	return func(y int) First {
+		return func(z int) int {
+			return x*x + y*y + z*z
+		}
+	}
+}
+
+func main() {
+	// 5*5 + 6*6 + 7*7
+	fmt.Println(squareSum(5)(6)(7))
+}
+```
