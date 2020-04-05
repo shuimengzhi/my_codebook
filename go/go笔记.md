@@ -345,3 +345,40 @@ func main() {
 	fmt.Println(squareSum(5)(6)(7))
 }
 ```
+#go语言不允许结构在其他的包定义
+```
+package main
+import(
+  "fmt"
+)
+func Add(a ,b int){         //函数
+  fmt.Println(a+b)
+}
+func (a int) Add (b int){   //方法
+  fmt.Println(a+b)
+}
+```
+报错内容:
+```
+cannot define new methods on non-local type int
+```
+解决方法
+```
+package main
+import(
+  "fmt"
+)
+type myInt int
+func Add(a ,b int){             //函数
+  fmt.Println(a+b)
+}
+func (a myInt) Add (b myInt){   //方法
+  fmt.Println(a+b)
+}
+func main() {
+        a, b := 3,4
+        var aa,bb myInt = 3,4
+        Add(a,b)
+        aa.Add(bb)
+  }
+  ```
