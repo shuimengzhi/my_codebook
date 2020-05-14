@@ -50,12 +50,14 @@ Vue.component('blog-post', {
   template: '<h3>{{ title }}</h3>'
 })
 ```
+这里设置参数title应该放在哪里
 
 ```
 <blog-post title="My journey with Vue"></blog-post>
 <blog-post title="Blogging with Vue"></blog-post>
 <blog-post title="Why Vue is so fun"></blog-post>
 ```
+这里设置参数应该是什么值
 
 # 组件上的v-model
 
