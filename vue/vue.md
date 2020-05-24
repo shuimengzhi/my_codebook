@@ -112,3 +112,23 @@ https://cn.vuejs.org/v2/cookbook/adding-instance-properties.html
 
 $避免参数冲突而用的
 比如参数 aj,有可能在别的地方有用,直接调用会有可能在别的地方变化了，而使用$这个变量$aj只能在当前的Vue实例有效，如果不加$则会影响全局的aj值
+
+# Invalid Host header 解决方法
+vue.config.js文件添加这个
+```
+devServer: {
+        disableHostCheck: true
+    }
+```
+
+# chrome开发者工具打开没有vue,则在main.js添加
+
+```
+// 若是没有开启Devtools工具，在开发环境中开启，在生产环境中关闭
+if (process.env.NODE_ENV == 'development') {
+    Vue.config.devtools = true;
+} else {
+    Vue.config.devtools = false;
+}
+```
+然后vue开启开发者模式

@@ -12,7 +12,7 @@
 
 # brower send messages to server
 Brower->HTTP->socket(like door,open)->
-TCP->socket(like door,open)->HTTP->Server
+TCP->TCP->socket(like door,open)->HTTP->Server
 
 # tcp
 1.数据不会丢失
@@ -107,3 +107,60 @@ suppose request www.baidu.com
 2.local DNS->(com)TLD DNS(responed local DNS about baidu.com Authoritative DNS address)
 3.local DNS->Authoritative DNS(responed local DNS about baidu.com IP)
 4.local DNS->(send ip of www.baidu.com to brower)brower
+
+# ip
+ip不保证分段交付，不保证顺序交付数据
+
+# tcp
+tcp 有阻塞控制来防止网络传输遇到的阻塞
+传输层依然保持在各自的host，跨越host传输数据是网络层做的事。传输层就像家里整理打包快递的，网络层就像物流
+
+#  multiplexing
+传输层将数据封装外包头部
+打包方式:
+{
+    source port+destination port{
+        Other header fields{
+            Application data
+        }
+    }
+}
+
+#  demultiplexing
+将传输层收到的封装包解开，找到对应的socket（每个socket都有独一无二的标识）
+
+# 网络层
+网络层封装传输层给的segment，把这个封装好的塞进ip数据包
+
+# network layer 
+every router has forwarding table. When the router received package .It will read forwarding table .Use package header value to query output where. 
+
+# 物理层
+发送0，1信号，媒介是电磁波、光缆、电缆等
+# 链路层
+将0，1信号分组，并定义意义
+# 帧
+以太网规定，一组电信号构成一个数据包，叫做"帧"（Frame）
+
+# MAC地址
+以太网规定，连入网络的所有设备，都必须具有"网卡"接口。数据包必须是从一块网卡，传送到另一块网卡。网卡的地址，就是数据包的发送地址和接收地址，这叫做MAC地址。
+
+依靠mac地址只能在子网络之间通信，而子网络通信都是通过广播形式传播，效率低，每台机子都会收到包，很不好。
+
+网络如果想连接成功必须知道mac地址和ip地址
+
+# 子网掩码
+两台电脑的子网掩码加上ip地址判断是否在同一个子网络
+
+# ARP协议
+前提：知道接收者的ip地址
+
+如果两台机子都在同一个子网络下，通过广播的方式找到与自己需要找的ip地址相匹配的ip地址。找到后，那台机子发送mac地址
+
+如果两台机子不在一个子网络，则通过两个子网络之间的网关来判断
+
+# DHCP协议
+自动分配ip的协议
+
+# 交换机
+存储mac地址表的地方，并转发到要去的mac地址
