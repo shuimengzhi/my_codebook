@@ -22,3 +22,4 @@ Usage: mysql_markdown [options...]
 -c      charset.  default utf8
 -o      output.   default current location
 ```
+mysql_markdown -u root -p root -P 3308 -d douyin
