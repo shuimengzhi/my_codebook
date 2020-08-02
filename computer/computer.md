@@ -124,10 +124,51 @@ Disassembly of section .text:
 
   17:	c3                   	retq   
 ```
-
+# GDB调试
+```
+gcc main.c -o main.out -g
+```
+编译的时候使用-g选项，它的目的是向可执行程序中加入调试信息，包括源代码、符号表等，GDB 需要这些额外的信息来完成调试工作。
+```
+gbd a.out
+```
+```
+(gbd)disassemble main
+```
+反汇编main函数
 ## 寄存器
 ![](./registers.png)
 当汇编使用左侧类似%rax白色区域的存储时，用的是64位存储。使用右侧灰色部分的时候，是32位存储
 
 ## 地址计算
 ![](./address_computation.png)
+
+# condition code
+## CF
+cf set if carry out from most significant bit(unsigned flow)
+## ZF
+zf set if t == 0
+## SF
+sf set if t < 0(as signed)
+## OF
+of set if two's-complement(signed)overflow
+## lea
+```
+leaq (%rdi,%rdi,2) = (%rdi)+2*(%rdi)
+```
+lea:address compulation
+## cmp
+```
+cmpq Src1,Src2 => Src2-Src1
+```
+只对两个数进行减法，不对结果进行存储
+## test
+```
+testq Src1,Src2 => Src1&Src2
+```
+## SetX Instructions
+![](./58DB29C5-31A4-400B-BE4E-43D0DF887896.png)
+### example
+![](./WeChatf89c9abeaf40ced444d45fa4d582587c.png)
+## jX Instructions
+![](./WeChat6da2a03cc767cba8ef47bd2d15849489.png)
