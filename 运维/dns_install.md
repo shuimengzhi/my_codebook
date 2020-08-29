@@ -118,3 +118,7 @@ vim /etc/sysconfig/network-scripts/ifcfg-ens33
 重新配置网络
 ifup ens33
 重启网卡
+
+防火墙记得开启53端口的udp并且重启
+firewall-cmd --add-port=53/udp --permanent
+firewall-cmd --reload
