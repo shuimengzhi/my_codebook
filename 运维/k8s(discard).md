@@ -158,7 +158,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
      etcd-peer-csr.json | cfssl-json -bare etcd-peer
 
 ```
-
+签发证书完以后把ca.pem  etcd-peer-key.pem  etcd-peer.pem复制到部署etcd的服务器上
 # Init cluster
 查看默认初始化配置
 kubeadm config print init-defaults
@@ -225,8 +225,21 @@ rm -f etcd-v3.3.25-linux-amd64.tar.gz
 mv etcd-v3.3.25-linux-amd64/ /opt/etcd-v3.3.25
 cd /opt
 ln -s etcd-v3.3.25/ etcd
+
 mkdir -p /opt/etcd/certs /data/etcd /data/logs/etcd-server
 
+chown -R etcd:etcd /opt/etcd-v3.3.25/
+chown -R etcd:etcd /data/etcd
+chown -R etcd:etcd /data/logs/etcd-server
+<!--安装进程管理器-->
+pip3 install pip --upgrade
+pip install supervisor
+
+systemctl start supervisord.service
+systemctl enable supervisord.service
+
+cd /opt/etcd && vim etcd-server-startup.sh
+demo
 ```
 #!/bin/sh
 ./etcd  --name ${ETCD_NAME} \\
@@ -243,6 +256,30 @@ mkdir -p /opt/etcd/certs /data/etcd /data/logs/etcd-server
         --peer-cert-file=/etc/etcd/kubernetes.pem \\
         --peer-key-file=/etc/etcd/kubernetes-key.pem \\
         --peer-trusted-ca-file=/etc/etcd/ca.pem \\
+        --peer-client-cert-auth \\
+        --initial-cluster-token etcd-cluster-0 \\
+        --initial-cluster-state new \\
+        --log-output stdout
+```
+
+
+node1
+```
+#!/bin/sh
+./etcd  --name node1-etcd \\
+        --data-dir=/data/etcd/node1-etcd \\
+        --listen-peer-urls https://172.16.183.101:2380 \\
+        --listen-client-urls https://172.16.183.101:2379,https://127.0.0.1:2379 \\
+        --initial-advertise-peer-urls https://172.16.183.101:2380 \\
+        --advertise-client-urls https://172.16.183.101:2379 \\
+        --initial-cluster node1-etcd=https://172.16.183.101:2380,node2-etcd=https://172.16.183.102:2380,node3-etcd=https://172.16.183.104:2380 \\
+        --trusted-ca-file=./certs/ca.pem \\
+        --cert-file=./certs/etcd-peer.pem \\
+        --key-file=./certs/etcd-peer-key.pem \\
+        --client-cert-auth \\
+        --peer-cert-file=./certs/etcd-peer.pem \\
+        --peer-key-file=./certs/etcd-peer-key.pem \\
+        --peer-trusted-ca-file=./certs/ca.pem \\
         --peer-client-cert-auth \\
         --initial-cluster-token etcd-cluster-0 \\
         --initial-cluster-state new \\

@@ -11,7 +11,7 @@ options {
 	secroots-file	"/var/named/data/named.secroots";
 	recursing-file	"/var/named/data/named.recursing";
 	allow-query     { any; };//允许查询任何ip
-    forwarders      {172.16.183.2; };//网关ip，向上查询使用
+    forwarders      {172.16.183.2; };//网关ip，向上查询使用,也可以是公共的dns ip
 
 	/*
 	 - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
