@@ -386,3 +386,64 @@ func main() {
 #什么时候用协程？
 
 当代码文件执行的时候，遇到阻塞需要等待的时候，使用协程去执行下一行代码，然后中间有时间的时候（比如又遇到别的阻塞的时候）再去执行之前阻塞完成的代码
+
+# Cond条件变量
+本质是锁的转让，wait条件没达到，先解协程独占锁，转给别的协程用，直到接到通知再继续锁上协程独占锁
+
+link:https://golang.org/pkg/sync/#Cond
+```
+lock := new(sync.Mutex)
+cond := sync.NewCond(lock)
+```
+cond.L.Lock()和cond.L.Unlock()：也可以使用lock.Lock()和lock.Unlock()，完全一样，因为是指针转递
+
+cond.Wait()：Unlock()->阻塞等待通知(即等待Signal()或Broadcast()的通知)->收到通知->Lock()
+
+cond.Signal()：通知一个Wait()了的，若没有Wait()，也不会报错。Signal()通知的顺序是根据原来加入通知列表(Wait())的先入先出
+
+cond.Broadcast(): 通知所有Wait()了的，若没有Wait()，也不会报错
+
+抢占锁后，判断自己是否满足处理 条件，如果不满足则先 释放锁给别人用，然后自己 阻塞，等别人主动 通知自己(肯定是别人的事情做完了才会通知自己)，就解除阻塞，然后再去 获得锁
+
+```
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+
+func main() {
+    cond := sync.NewCond(new(sync.Mutex))
+    condition := 0
+
+    // Consumer
+    go func() {
+        for {
+            cond.L.Lock()
+            for condition == 0 {
+                cond.Wait()
+            }
+            condition--
+            fmt.Printf("Consumer: %d\n", condition)
+            cond.Signal()
+            cond.L.Unlock()
+        }
+    }()
+
+    // Producer
+    for {
+        time.Sleep(time.Second)
+        cond.L.Lock()
+        for condition == 3 {
+            cond.Wait()
+        }
+        condition++
+        fmt.Printf("Producer: %d\n", condition)
+        cond.Signal()
+        cond.L.Unlock()
+    }
+}
+```
