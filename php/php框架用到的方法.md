@@ -540,3 +540,60 @@ $str = "Is your name O\'reilly?";
 echo stripslashes($str);
 ?>
 ```
+
+# $argv
+Contains an array of all the arguments passed to the script when running from the command line.
+```
+<?php
+var_dump($argv);
+?>
+```
+When executing the example with:` php script.php arg1 arg2 arg3`
+
+```
+array(4) {
+  [0]=>
+  string(10) "script.php"
+  [1]=>
+  string(4) "arg1"
+  [2]=>
+  string(4) "arg2"
+  [3]=>
+  string(4) "arg3"
+}
+```
+
+# current()
+Every array has an internal pointer to its "current" element, which is initialized to the first element inserted into the array.
+```
+<?php
+$transport = array('foot', 'bike', 'car', 'plane');
+$mode = current($transport); // $mode = 'foot';
+$mode = next($transport);    // $mode = 'bike';
+$mode = current($transport); // $mode = 'bike';
+$mode = prev($transport);    // $mode = 'foot';
+$mode = end($transport);     // $mode = 'plane';
+$mode = current($transport); // $mode = 'plane';
+```
+
+# reset()
+Set the internal pointer of an array to its first element
+```
+<?php
+
+$array = array('step one', 'step two', 'step three', 'step four');
+
+// by default, the pointer is on the first element
+echo current($array) . "<br />\n"; // "step one"
+
+// skip two steps
+next($array);
+next($array);
+echo current($array) . "<br />\n"; // "step three"
+
+// reset pointer, start again on step one
+reset($array);
+echo current($array) . "<br />\n"; // "step one"
+
+?>
+```
