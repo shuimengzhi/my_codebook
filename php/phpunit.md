@@ -20,7 +20,13 @@ class SampleTest extends TestCase
 }
 ?>
 ```
-
+# 测试命令
+单个方法测试
+example:
+method:testAdd filePath:UnitTest/Operation/OperationStaffUserTest.php
+```
+./vendor/bin/co-phpunit --filter testAdd UnitTest/Operation/OperationStaffUserTest.php
+```
 # 依赖
 testProducerFirst,testProducerSecond执行完再执行testConsumer
 ```
